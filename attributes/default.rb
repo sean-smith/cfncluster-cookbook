@@ -118,11 +118,19 @@ when 'rhel', 'amazon'
     default['cfncluster']['rhel']['extra_repo'] = 'rhui-REGION-rhel-server-optional' if node['platform'] == 'redhat' && node['platform_version'].to_i >= 7
 
   when 'amazon'
-    default['cfncluster']['base_packages'] = %w[vim ksh tcsh zsh openssl-devel ncurses-devel pam-devel net-tools openmotif-devel
+    if node['platform_version'].to_i == 1
+      default['cfncluster']['base_packages'] = %w[vim ksh tcsh zsh openssl-devel ncurses-devel pam-devel net-tools openmotif-devel
                                                 libXmu-devel hwloc-devel db4-devel tcl-devel automake autoconf pyparted libtool
                                                 httpd boost-devel redhat-lsb mlocate mpich-devel R atlas-devel fftw-devel
                                                 libffi-devel dkms mysql-devel libedit-devel postgresql-devel postgresql-server
                                                 sendmail cmake byacc libglvnd-devel mdadm]
+    elsif node['platform_version'].to_i > 1
+      default['cfncluster']['base_packages'] = %w[vim ksh tcsh zsh openssl-devel ncurses-devel pam-devel net-tools openmotif-devel
+                                                  libXmu-devel hwloc-devel libxml2-devel tcl-devel automake autoconf pyparted libtool
+                                                  httpd boost-devel redhat-lsb-core mlocate atlas-devel fftw-devel libffi-devel
+                                                  openssl-devel dkms mysql-devel libedit-devel postgresql-devel postgresql-server
+                                                  sendmail cmake byacc libglvnd-devel mdadm perl-devel]
+    end
   end
 
   default['cfncluster']['ganglia']['apache_user'] = 'apache'

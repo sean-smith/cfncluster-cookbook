@@ -29,6 +29,12 @@ when 'rhel', 'amazon'
       command "yum-config-manager --enable #{node['cfncluster']['rhel']['extra_repo']}"
     end
   end
+
+  if node['platform'] == 'amazon' && node['platform_version'].to_i > 1
+    execute 'yum-config-manager-rhel' do
+      command "sudo amazon-linux-extras enable lustre2.10"
+    end
+  end
 when 'debian'
   include_recipe 'apt'
 end
