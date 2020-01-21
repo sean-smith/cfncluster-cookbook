@@ -32,7 +32,7 @@ default['cfncluster']['cookbook_virtualenv_path'] = "/root/.pyenv/versions/#{nod
 # Node Virtualenv Path
 default['cfncluster']['node_virtualenv_path'] = "/root/.pyenv/versions/#{node['cfncluster']['python-version']}/envs/#{node['cfncluster']['node_virtualenv']}"
 # Intel Packages
-default['cfncluster']['psxe']['version'] = '2019.5'
+default['cfncluster']['psxe']['version'] = '2020.0-008'
 default['cfncluster']['intelhpc']['version'] = '2018.0-1.el7'
 default['cfncluster']['intelmpi']['modulefile'] = "/opt/intel/impi/latest/modulefiles/mpi"
 default['cfncluster']['intelpython2']['version'] = '2019.4'

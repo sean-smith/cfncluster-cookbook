@@ -18,43 +18,53 @@
 case node['cfncluster']['cfn_node_type']
 when 'MasterServer'
 
-  # Downloads the intel-hpc-platform rpms
-  bash "install intel hpc platform" do
-    cwd node['cfncluster']['sources_dir']
-    code <<-INTEL
-      set -e
-      yum-config-manager --add-repo http://yum.repos.intel.com/hpc-platform/el7/setup/intel-hpc-platform.repo
-      yum-config-manager --save --setopt=intel-hpc-platform.skip_if_unavailable=true
-      rpm --import http://yum.repos.intel.com/hpc-platform/el7/setup/PUBLIC_KEY.PUB
-      yum -y install --downloadonly --downloaddir=/opt/intel/rpms intel-hpc-platform-*-#{node['cfncluster']['intelhpc']['version']}
-    INTEL
-    creates '/opt/intel/rpms'
+
+  # Install the intel-hpc-platform rpms
+  yum_repository 'intel-hpc-platform' do
+    description   'Intel(R) HPC Platform meta-Packages for EL7'
+    baseurl       'https://yum.repos.intel.com/hpc-platform/el7'
+    gpgkey        'https://yum.repos.intel.com/hpc-platform/el7/setup/PUBLIC_KEY.PUB'
+    repo_gpgcheck true
+    retries 3
+    retry_delay 5
+  end
+
+  yum_package "intel-hpc-platform-*-#{node['cfncluster']['intelhpc']['version']}" do
+    retries 3
+    retry_delay 5
   end
 
   # parallel studio is intel's optimized libraries, this is the runtime (free) version
-  bash "install intel psxe" do
-    cwd node['cfncluster']['sources_dir']
-    code <<-INTEL
-      set -e
-      rpm --import https://yum.repos.intel.com/2019/setup/RPM-GPG-KEY-intel-psxe-runtime-2019
-      yum -y install https://yum.repos.intel.com/2019/setup/intel-psxe-runtime-2019-reposetup-1-0.noarch.rpm
-      yum-config-manager --save --setopt=intel-psxe-runtime-2019.skip_if_unavailable=true
-      yum -y install intel-psxe-runtime-#{node['cfncluster']['psxe']['version']}
-    INTEL
-    creates '/opt/intel/psxe_runtime'
+  yum_repository 'intel-psxe-runtime-2020' do
+    description   'Intel(R) Parallel Studio XE 2020 Runtime'
+    baseurl       'https://yum.repos.intel.com/2020'
+    gpgkey        'https://yum.repos.intel.com/2020/setup/RPM-GPG-KEY-intel-psxe-runtime-2020'
+    repo_gpgcheck true
+    retries 3
+    retry_delay 5
   end
 
-  # intel optimized versions of python
-  bash "install intel python" do
-    cwd node['cfncluster']['sources_dir']
-    code <<-INTEL
-      set -e
-      yum-config-manager --add-repo https://yum.repos.intel.com/intelpython/setup/intelpython.repo
-      yum-config-manager --save --setopt=intelpython.skip_if_unavailable=true
-      yum -y install intelpython2-#{node['cfncluster']['intelpython2']['version']} intelpython3-#{node['cfncluster']['intelpython3']['version']}
-    INTEL
-    creates '/opt/intel/intelpython2'
+  yum_package "intel-psxe-runtime-#{node['cfncluster']['psxe']['version']}" do
+    retries 3
+    retry_delay 5
   end
+
+
+  # intel optimized versions of python
+  yum_repository 'intelpython' do
+    description   'Intel(R) Distribution for Python* for Linux OS'
+    baseurl       'http://yum.repos.intel.com/intelpython'
+    gpgkey        'http://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB'
+    repo_gpgcheck true
+    retries 3
+    retry_delay 5
+  end
+
+  yum_package "intelpython2-#{node['cfncluster']['intelpython2']['version']} intelpython3-#{node['cfncluster']['intelpython3']['version']}" do
+    retries 3
+    retry_delay 5
+  end
+
 end
 
 # This rpm installs a file /etc/intel-hpc-platform-release that contains the INTEL_HPC_PLATFORM_VERSION
