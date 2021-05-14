@@ -306,7 +306,7 @@ when 'rhel', 'amazon'
                                                 httpd boost-devel redhat-lsb mlocate lvm2 mpich-devel R atlas-devel
                                                 blas-devel fftw-devel libffi-devel openssl-devel dkms mariadb-devel libedit-devel
                                                 libical-devel postgresql-devel postgresql-server sendmail libxml2-devel libglvnd-devel
-                                                mdadm python python-pip libssh2-devel libgcrypt-devel libevent-devel glibc-static bind-utils
+                                                mdadm python python-pip libssh2-devel libgcrypt-devel libevent-devel glibc-static
                                                 iproute NetworkManager-config-routing-rules python3 python3-pip]
     if node['platform_version'].to_i >= 8
       # Do not install unversioned python
